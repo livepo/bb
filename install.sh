@@ -1,6 +1,6 @@
 #!/bin/bash
 
 
-wget https://github.com/livepo/bb/releases/download/v0.1/bb-linux
+wget https://github.com/livepo/bb/releases/download/v0.1/bb
 
-install bb-linux /usr/local/bin
+install bb /usr/local/bin
