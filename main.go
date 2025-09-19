@@ -1,11 +1,9 @@
 package main
 
-
 import (
-    "bb/cmd"
+	"bb/cmd"
 )
 
-
 func main() {
-    cmd.Execute()
+	cmd.Execute()
 }

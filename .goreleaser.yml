@@ -1,0 +1,25 @@
+project_name: bb
+
+builds:
+  - id: bb
+    main: ./
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    binary: bb
+    ldflags:
+      - "-s -w -X 'bb/cmd.Version={{.Version}}'"
+
+archives:
+  - id: default
+    files:
+      - README.md
+    format: tar.gz
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+changelog:
+  use: git
