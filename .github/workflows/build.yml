@@ -65,6 +65,14 @@ jobs:
       - name: Update formula file in tap
         run: |
           set -e
+          # ensure tap repo is aligned with remote master before making edits
+          cd tap
+          git checkout .
+          git fetch origin
+          git checkout master || git switch -c master
+          git reset --hard origin/master
+          cd ..
+
           TAG=${{ steps.asset.outputs.version }}
           # strip leading v if present
           VERSION=${TAG#v}
@@ -78,7 +86,6 @@ jobs:
           sed -i.bak "s|\${VERSION}|${VERSION}|g" tap/Formula/bb.rb
           sed -i.bak "s|\${sha256}|${sha256}|g" tap/Formula/bb.rb
           # Replace url line with actual asset URL
-          # Use sed: replace the line that starts with url with the asset URL
           sed -n '1,200p' tap/Formula/bb.rb >/tmp/bb.rb.tmp || true
           awk -v url="${ASSET_URL}" '{ if ($1=="url") { print "  url \""url"\"" } else print $0 }' /tmp/bb.rb.tmp > tap/Formula/bb.rb
 
@@ -88,12 +95,14 @@ jobs:
           cd tap
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          # integrate remote changes to avoid rejected pushes
-          git checkout master
-          git pull --rebase origin master || true
           git add Formula/bb.rb
-          git commit -m "chore: bump bb to ${VERSION}" || echo "no changes"
-          git push origin HEAD:master
+          # commit only if there are changes
+          if git diff --staged --quiet && git diff --quiet; then
+            echo "no changes to commit"
+          else
+            git commit -m "chore: bump bb to ${VERSION}"
+            git push origin HEAD:master
+          fi
         env:
           GIT_ASKPASS: /bin/true
           HOMEBREW_GITHUB_TOKEN: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
