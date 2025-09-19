@@ -60,6 +60,7 @@ jobs:
           repository: livepo/homebrew-tap
           token: ${{ secrets.HOMEBREW_GITHUB_TOKEN }}
           path: tap
+          fetch-depth: 0
 
       - name: Update formula file in tap
         run: |
@@ -87,6 +88,9 @@ jobs:
           cd tap
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # integrate remote changes to avoid rejected pushes
+          git checkout master
+          git pull --rebase origin master || true
           git add Formula/bb.rb
           git commit -m "chore: bump bb to ${VERSION}" || echo "no changes"
           git push origin HEAD:master
