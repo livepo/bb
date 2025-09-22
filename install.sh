@@ -79,29 +79,9 @@ if [ "$OS" = "windows" ]; then
 	EXT=".exe"
 fi
 
-# Try direct binary first (releases may include a raw 'bb' binary)
 BASE_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/download/${VERSION}"
-RAW_URL="$BASE_URL/${BIN_NAME}${EXT}"
-RAW_DEST="$TMPDIR/${BIN_NAME}${EXT}"
 
-echo "尝试下载直接二进制: $RAW_URL"
-if download "$RAW_URL" "$RAW_DEST"; then
-	if [ -s "$RAW_DEST" ]; then
-		echo "下载成功，安装到 ${INSTALL_DIR}/${BIN_NAME}${EXT} ..."
-		if [ ! -w "$INSTALL_DIR" ]; then
-			sudo mv "$RAW_DEST" "$INSTALL_DIR/${BIN_NAME}${EXT}"
-		else
-			mv "$RAW_DEST" "$INSTALL_DIR/${BIN_NAME}${EXT}"
-		fi
-		sudo chmod +x "$INSTALL_DIR/${BIN_NAME}${EXT}" || true
-		echo "安装完成"
-		echo "已安装到 ${INSTALL_DIR}/${BIN_NAME}${EXT}"
-		"$INSTALL_DIR/${BIN_NAME}${EXT}" version || true
-		exit 0
-	fi
-fi
-
-# Fallback: try archive produced by goreleaser (tar.gz)
+# Try archive produced by goreleaser (tar.gz)
 ARCHIVE_NAME="${REPO_NAME}_${VERSION}_${OS}_${ARCH}.tar.gz"
 ARCHIVE_URL="$BASE_URL/${ARCHIVE_NAME}"
 ARCHIVE_DEST="$TMPDIR/${ARCHIVE_NAME}"
@@ -134,5 +114,5 @@ if download "$ARCHIVE_URL" "$ARCHIVE_DEST"; then
 	fi
 fi
 
-echo "无法找到可下载的二进制或归档。请检查版本号或到 https://github.com/${REPO_OWNER}/${REPO_NAME}/releases 手动下载。" >&2
+echo "无法找到可下载的归档。请检查版本号或到 https://github.com/${REPO_OWNER}/${REPO_NAME}/releases 手动下载。" >&2
 exit 1

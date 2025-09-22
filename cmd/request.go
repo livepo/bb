@@ -66,19 +66,6 @@ func init() {
 	}
 }
 
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "Print the version number",
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(Version)
-	},
-}
-
-func init() {
-	// attach version command
-	rootCmd.AddCommand(versionCmd)
-}
-
 func MD5(str string) string {
 	h := md5.New()
 	h.Write([]byte(str))
