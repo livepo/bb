@@ -82,7 +82,9 @@ fi
 BASE_URL="https://github.com/${REPO_OWNER}/${REPO_NAME}/releases/download/${VERSION}"
 
 # Try archive produced by goreleaser (tar.gz)
-ARCHIVE_NAME="${REPO_NAME}_${VERSION}_${OS}_${ARCH}.tar.gz"
+# Note: tags are `vX.Y.Z` but goreleaser archive names commonly omit the leading 'v'.
+VERSION_NO_V="${VERSION#v}"
+ARCHIVE_NAME="${REPO_NAME}_${VERSION_NO_V}_${OS}_${ARCH}.tar.gz"
 ARCHIVE_URL="$BASE_URL/${ARCHIVE_NAME}"
 ARCHIVE_DEST="$TMPDIR/${ARCHIVE_NAME}"
 
