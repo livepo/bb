@@ -11,6 +11,11 @@ builds:
       - amd64
       - arm64
     binary: bb
+    env:
+      - CGO_ENABLED=0
+      - GOFLAGS=-mod=mod
+    flags:
+      - -tags=netgo
     ldflags:
       - "-s -w -X 'bb/cmd.Version={{.Version}}'"
 
